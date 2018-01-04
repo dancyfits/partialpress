@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi" />
+<title>partial.press — the bias-aware news aggregator</title>
+<meta name="description" content="Modern-day politics has shown no media outlet is free from unintended political bias. Be concious of the bias: use partial.press to know what you're reading.">
+<meta http-equiv="refresh" content="120">
+
+<link rel="canonical" href="https://partial.press/">
+<link rel="icon" type="image/png" href="favicon.png" />
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110273512-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110273512-3');
+</script>
+<meta name="google-site-verification" content="DTj9GTNlzq7WP80mAHAdqNzWBHDoPmNm0nR9w_JboEA" />
+
+<meta name="thumbnail" content="https://partial.press/social.jpg" />
+ 
+<meta property="og:site_name"    content="partial.press" />
+<meta property="og:url"          content="https://partial.press/" />
+<meta property="og:type"         content="article" />
+<meta property="og:title"        content="partial.press — the bias-aware news aggregator" />
+<meta property="og:description"  content="Modern-day politics has shown no media outlet is free from unintended political bias. Be concious of the bias: use partial.press to know what you're reading." />
+<meta property="og:image"        content="https://partial.press/social.jpg" />
+<meta property="og:image:width"  content="934" />
+<meta property="og:image:height" content="489" />
+
+
+<meta name="twitter:card"        content="summary_large_image" />
+<meta name="twitter:site"        content="@mcknco" />
+<meta name="twitter:creator"     content="@mcknco" />
+<meta name="twitter:title"       content="partial.press — the bias-aware news aggregator" />
+<meta name="twitter:description" content="Modern-day politics has shown no media outlet is free from political bias. Know what you're reading: use partial.press." />
+<meta name="twitter:image"       content="https://partial.press/social.jpg" />
+
+
+<style>
+    html{
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+    }
+    body{
+        background: #f4f4f4;
+        margin: 8px;
+    }
+    a {
+        color: #000;
+        text-decoration: none;
+    }
+
+    a:hover{
+        text-decoration: underline;
+    }
+
+    img {
+        width: 100px;
+    }
+
+    .thumbnail{
+        width: 72px;
+        height: 72px;
+        background-size:cover;
+        background-position: center; 
+        border-radius: 5px;
+        /* display: inline-block; */
+        margin: 10px;
+        float: left;
+        /* flex: 72px; */
+        /* display: inline; */
+    }
+
+    /* #red {
+        background-color: #f00;
+        display: inline-block;
+        float:right;
+    } */
+    /* #blah {
+        background-color: #aaa;
+        border-radius: 10px;
+    } */
+
+    .news{
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        /* flex-direction: column; */
+        justify-content: space-around;
+    }
+
+    /* .news-item {
+        background: #fff;
+        flex-grow: 1;
+        margin:2px;
+
+        border: 1px solid #D4D4D4;
+        border-radius: 5px;
+        width: 350px;
+    } */
+
+    .center-box{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align:center;
+    }
+
+    .box-item:hover{
+        box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.25);
+    }
+
+    .headline{
+        margin:10px;
+        /* display: inline-block; */
+    }
+    .attribution{
+        margin:10px;
+        font-size: 0.85rem;
+        color: #A9A9A9;
+    }
+    .attribution a{
+        color: #A9A9A9;
+    }
+
+    h1{
+        /* color: #fff; */
+        font-size: 2rem;
+        margin: 10px;
+    }
+    h2{
+        margin: 10px;
+        font-size:1.5rem;
+    }
+
+    input[type=text]{
+        width: 200px;
+        border-radius: 5px;
+        border: 2px solid #4247ff;
+        padding:5px 10px;
+        font-size:1rem;
+        outline: none;        
+    }
+
+    button{
+        border-radius: 5px;
+        /* border: 1px solid #D4D4D4;;; */
+        border: 2px solid #ff4742;;;
+        
+        /* border: 0; */
+        font-weight: bold;
+        color: #ff4742;
+        background-color: #fff;
+        /* background-image: linear-gradient(-90deg, #FFAAAA 0%, #AAAAFF 100%); */
+        padding:5px 10px;
+        font-size:1rem;        
+        outline: none;
+    }
+
+    button:hover{
+        /* border: 1px solid #000;;; */
+        background-color: #ff4742;
+        color: #fff;
+        cursor: pointer;
+    }
+
+
+    @media (max-width: 371px) { html{font-size:12px;} }
+
+
+
+
+
+.feedback {
+    position:fixed;
+    border:1px solid #c6c2be;
+    bottom:0;
+    left:2rem;
+    margin:0;
+    width:16rem;
+    padding:0.5rem 0.75rem;
+    z-index:1000;
+    border-radius:5px;
+    border-bottom-left-radius:0;
+    border-bottom-right-radius:0;
+    border-bottom:0;
+    background:#fff;
+    color:#a6a29e;
+    box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.25);
+}
+
+.feedback .title {
+    color:#6f6f6f;
+    font-weight:bold;
+}
+
+.feedback .title:hover {
+    text-decoration: underline;
+}
+
+
+.feedback .chevron {
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    background:#6f6f6f;
+    border-radius:5px;
+    padding:0.1rem;
+    width:1rem;
+    height:1rem;
+}
+
+.feedback .chevron svg{
+    display:block;
+    width: 0.6rem;
+    height: 0.6rem;
+}
+
+.feedback .header {
+    display:flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+
+
+.feedback .text {
+    margin: 15px 0 5px;
+    color: #000;
+}
+
+.feedback input,
+.feedback textarea {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width:100%;
+    resize: vertical;
+    font-family: inherit;
+    font-size: inherit;
+    border: 1px solid #e4e4e4;
+    padding: 4px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    box-sizing:border-box;
+    font-size: 1rem;
+    outline: none;
+}
+
+.feedback textarea {
+    min-height:7rem;
+}
+
+.feedback button {
+    font-family:inherit;
+    border-radius: 5px;
+    border: 2px solid #ff4742;;;
+    font-weight: bold;
+    color: #ff4742;
+    background-color: #fff;
+    padding:2px 10px;
+    font-size:1rem;        
+    outline: none;
+    float:right;
+}
+
+.feedback button:hover {
+    background-color: #ff4742;
+    color: #fff;
+    cursor: pointer;
+}
+
+
+.feedback .success,
+.feedback #feedback-lastname,
+.feedback #feedback-chevron-bottom,
+.feedback .content{
+    display: none;
+}
+
+@media (max-width:600px) {
+    .feedback {
+        display:none;
+    }
+}
+
+
+#by-mcknco{
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    border-top-left-radius: 0.4em;
+    z-index: 1000;
+    background: #4247ff;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    align-items: center;
+    padding: 0.3rem 0.5rem;
+    font-weight: bold;
+    box-shadow: 0px 0px 10px 0 rgba(0,0,0,0.25);
+
+}
+
+#by-mcknco img {
+    margin-right: 0.3rem;
+    border-radius: 50%;
+    width: 2rem;
+}
+
+#by-mcknco:hover{
+    color: #4247ff;
+    background: #fff;
+}
+
+
+/* .source-item {
+    background: #fff;
+    flex-grow: 1;
+    margin:2px;
+    padding: 5px;
+    border: 1px solid #D4D4D4;
+    width: 200px;
+} */
+
+.box-item {
+    background: #fff;
+    flex-grow: 1;
+    margin:2px;
+    border: 1px solid #D4D4D4;
+}
+
+.source-item {
+    width: 200px;
+    padding: 5px;    
+    border-radius: 3px;
+}
+
+.news-item{
+    width: 350px;
+    border-radius: 5px;
+}
+.source-item input[type=checkbox]{margin-right:5px;}
+
+.red{
+    border-color: #faa;
+    background-color: #fff9f9;
+}
+
+.blue{
+    border-color: #aaf;
+    background-color: #f9f9ff;
+}
+
+
+</style>
+
+</head>
+<body>
+
+
+    <a href="https://mckn.co/partial-press" target="_blank">
+        <div id="by-mcknco">
+            <img src="mcknco.jpg"/>by mckn.co
+        </div>
+    </a>
+
+
+
+    <div id="feedback-popup" class="feedback">
+        <div id="feedback-header" class="header">
+            <div id="feedback-title" class="title">Have feedback?</div>
+
+            <div id="feedback-chevron-bottom" class="chevron">
+                <svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
+                    <path d="M30 12 L16 24 2 12"></path>
+                </svg>
+            </div>
+
+            <div id="feedback-chevron-top" class="chevron">
+                <svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
+                    <path d="M30 20 L16 8 2 20"></path>
+                </svg>
+            </div>
+        </div>
+    
+        <div id="feedback-content" class="content">
+            <div id="feedback-success-text" class="text success">Thanks for your message! We'll get back to you shortly.</div>
+            <div id="feedback-form">
+                <div id="feedback-text" class="text">Bug? Suggestion? Need help? Get in touch!</div>
+                <input id="feedback-name" type="text" placeholder="Name"/>
+                <input id="feedback-lastname" type="text" placeholder="Last Name"/>
+                <input id="feedback-email" type="email" placeholder="Email"/>
+                <textarea id="feedback-message" placeholder="Write your message"></textarea>
+                <button id="feedback-send-button">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function validateEmail(email) {
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
+        
+        function toggleFeedbackPopup() {
+            var fbf = document.getElementById("feedback-content");
+
+            if(fbf.style.display == "block"){
+                fbf.style.display = "none";
+                document.getElementById("feedback-chevron-bottom").style.display = "none";
+                document.getElementById("feedback-chevron-top").style.display = "flex";
+                document.getElementById("feedback-title").style.color = "#6f6f6f";
+                document.getElementById("feedback-popup").style.minHeight = "0";
+            } else {
+                fbf.style.display = "block";
+                document.getElementById("feedback-chevron-bottom").style.display = "flex";
+                document.getElementById("feedback-chevron-top").style.display = "none";
+                document.getElementById("feedback-title").style.color = "#000";
+                document.getElementById("feedback-popup").style.minHeight = "17rem";
+            }
+        }
+
+        var fbc = document.getElementById("feedback-header");
+        fbc.addEventListener("click",function(){toggleFeedbackPopup();});
+
+        var fbBtn = document.getElementById("feedback-send-button");
+        fbBtn.addEventListener("click",function(){
+            var name = document.getElementById("feedback-name").value.trim();
+            var email = document.getElementById("feedback-email").value.trim();
+            if(name == "" || email == ""){
+                alert("Please complete all fields.");
+                return;                
+            }
+            if(!validateEmail(email)) {
+                alert("Please specify a valid email.");
+                return;                
+            }
+
+            var name     = encodeURIComponent(document.getElementById("feedback-name").value);
+            var email    = encodeURIComponent(document.getElementById("feedback-email").value);
+            var message  = encodeURIComponent(document.getElementById("feedback-message").value);
+            var lastname = encodeURIComponent(document.getElementById("feedback-lastname").value);
+
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4){
+                    if(xhr.status == 200){
+                        console.log("200 /feedback.php")
+                        document.getElementById("feedback-form").style.display = "none";
+                        document.getElementById("feedback-success-text").style.display = "block";
+                        document.getElementById("feedback-title").innerHTML = "Feedback sent";
+
+                        // force refresh popup for display bug safari
+                        document.getElementById("feedback-popup").style.display='none';
+                        document.getElementById("feedback-popup").offsetHeight;
+                        document.getElementById("feedback-popup").style.display='';
+                    } else {
+                        alert("Apologies. My poor server couldn't process your message.");
+                   }
+                }
+            } 
+            xhr.open("POST","/feedback.php",true);
+            xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+            xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xhr.send("name="+name+"&lastname="+lastname+"&email="+email+"&message="+message);
+        });
+    </script>
+
+<div id="news" class="news">
+
+<div class="news-item box-item center-box">
+    <div>
+        <h1>
+            <span style="color: #4247ff;">partial</span>.<span style="color: #ff4742;">press</span>
+
+
+
+            <svg style="vertical-align:middle;" width="40px" height="40px" viewBox="0 0 77 77" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <desc>Created with Sketch.</desc>
+                <defs></defs>
+                <g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Desktop" transform="translate(-698.000000, -71.000000)">
+                        <g id="Group" transform="translate(250.000000, 55.000000)">
+                            <g id="news-svg" transform="translate(448.000000, 16.000000)">
+                                <path d="M38.5,0 C59.7629629,1.30198097e-15 77,17.2370371 77,38.5 C77,59.7629629 59.7629629,77 38.5,77 C17.2370371,77 2.60396194e-15,59.7629629 0,38.5 C-2.60396194e-15,17.2370371 17.2370371,3.90594291e-15 38.5,0 L38.5,0 Z" id="Shape" fill="#000000"></path>
+                                <path d="M51.36,32.88 L42.12,32.88 L42.12,34.42 L51.36,34.42 L51.36,32.88 Z M51.36,29.8 L42.12,29.8 L42.12,31.34 L51.36,31.34 L51.36,29.8 Z M51.36,23.64 L42.12,23.64 L42.12,25.18 L51.36,25.18 L51.36,23.64 Z M40.58,23.64 L31.34,23.64 L31.34,34.42 L40.58,34.42 L40.58,23.64 Z M51.36,26.72 L42.12,26.72 L42.12,28.26 L51.36,28.26 L51.36,26.72 Z M51.36,35.96 L31.34,35.96 L31.34,37.5 L51.36,37.5 L51.36,35.96 Z M54.44,15.94 L28.26,15.94 C26.558963,15.94 25.18,17.318963 25.18,19.02 L25.18,51.36 C25.18,53.061037 26.558963,54.44 28.26,54.44 L54.44,54.44 C56.141037,54.44 57.52,53.061037 57.52,51.36 L57.52,19.02 C57.52,17.318963 56.141037,15.94 54.44,15.94 Z M54.44,51.36 L28.26,51.36 L28.26,19.02 L54.44,19.02 L54.44,51.36 Z M45.2,45.2 L31.34,45.2 L31.34,46.74 L45.2,46.74 L45.2,45.2 Z M51.36,39.04 L31.34,39.04 L31.34,40.58 L51.36,40.58 L51.36,39.04 Z M51.36,42.12 L31.34,42.12 L31.34,43.66 L51.36,43.66 L51.36,42.12 Z M48.28,57.52 L22.1,57.52 L22.1,25.18 L23.64,25.18 L23.64,22.1 L22.1,22.1 C20.398963,22.1 19.02,23.478963 19.02,25.18 L19.02,57.52 C19.02,59.221037 20.398963,60.6 22.1,60.6 L48.28,60.6 C49.981037,60.6 51.36,59.221037 51.36,57.52 L51.36,55.98 L48.28,55.98 L48.28,57.52 Z" id="Shape" fill="#FFFFFF"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </svg>
+        </h1>
+        <div class="headline">breaking news according to <strong><span style="color: #4247ff;">political</span> <span style="color: #ff4742;">bias</span></strong></div>
+    </div>
+</div>
+
+
+<div class="news-item box-item"><div class="thumbnail" style="border-radius: 50%; background-image: url('mcknco.jpg');">&nbsp;</div>    
+<div class="headline">Made by <a style="color:#4247ff;" target="_blank" href="https://twitter.com/mcknco"><strong>@mcknco</strong></a> using <a href="https://newsapi.org" target="_blank"><strong>NewsAPI.org</strong></a>. Visit my site at <a href="https://mckn.co/partial-press" style="color:#ff4742;" target="_blank"><strong>mckn.co</strong></a>.</div></div>
+
+
+
+</div>
+
+
+<div id="sources" class="news">
+    
+
+
+</div>
+
+<script>
+
+    window.addEventListener("scroll",function(){
+        var scroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0; 
+        if(document.body.scrollHeight - window.innerHeight - scroll > 100){
+            document.getElementById("feedback-popup").style.display = "";
+            document.getElementById("by-mcknco").style.display = "";
+        } else {
+            document.getElementById("feedback-popup").style.display = "none";                
+            document.getElementById("by-mcknco").style.display = "none";
+        }
+    });
+
+
+    console.log("document.cookie: " + document.cookie);
+
+    function setCookie() {
+        // var d = new Date();
+        // d.setTime(d.getTime() + (6*365*24*60*60*1000));
+        // var expires = "expires="+ d.toUTCString();
+        // document.cookie = "firstVisit=no;" + expires + ";path=/";
+        // console.log("Cookie Set");
+    }
+
+
+    function resize(){
+        // 16 px = left/right margin, 356px = newsbox + 2 * 1px border + 2 * 2px margin
+        var numCols = Math.max(1, Math.floor( (window.innerWidth-16)/356 )); 
+       console.log( numCols );
+
+       var items = document.getElementsByClassName("news-item");
+       for(var i=0;i<items.length;i++){
+           items[i].style.order = "";
+       }
+
+        if( numCols == 2){
+            var iBlue = 1;
+            var iRed = 2;
+            for(var i=0;i<items.length;i++){
+                if(items[i].style.display != "none"){
+                    if( items[i].classList.contains("red")){ 
+                        items[i].style.order = iRed; iRed += 2;
+                    } else {
+                        items[i].style.order = iBlue; iBlue += 2;
+                    }
+                }
+            }
+        }
+    }
+    window.addEventListener('resize', resize);
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4 && xhr.status == 200){
+            var json = JSON.parse(xhr.responseText);
+
+            var news = document.getElementById("news");
+            var html = "";
+
+            var sourceItems = [];
+
+            for (var i in json){
+                var time = (new Date().getTime())/1000.0; // seconds
+                var pubTime = json[i].published;
+
+                var agoUnit = "m";
+                var ago = (time-pubTime)/60.0; // minutes
+
+                if(ago >= 60.0){ 
+                    ago = ago/60.0; agoUnit = "h"; // hours
+                    if(ago >= 24.0){ ago = ago/24.0; agoUnit = "d"; } // days
+                }
+
+                ago = Math.floor(ago);
+
+                sourceItems[json[i].source] = json[i].bias;
+                var encodedSource = json[i].source.replace(/\s+/g, '-').toLowerCase();
+
+                var biasColor = json[i].bias == "red" ? "#faa" : "#aaf";
+                var biasBgColor = json[i].bias == "red" ? "#fff9f9" : "#f9f9ff";
+
+                html += "<div ";
+                if(document.cookie.indexOf(encodedSource + "=no") != -1 ){
+                    html += "style=\"display:none\" ";
+                }
+                html += "class=\"news-item box-item " + encodedSource + " " + json[i].bias + "\"><div class=\"thumbnail\" style=\"background-image: url('" + json[i].img + "');\"";
+                html += ">&nbsp;</div><div class=\"headline\"><div><a target=\"_blank\" href=" + json[i].url + ">" + json[i].title + "</a></div><div class=\"attribution\">" + json[i].source;
+                if(json[i].published != null) html += " — " + ago + agoUnit + " ago";
+                html+= "</div></div></div>";
+            }
+
+            news.innerHTML += html; //news.innerHTML.replace("contents",html);
+
+            html = ""; // reuse
+            var sources = document.getElementById("sources");
+            for (var i in sourceItems){
+                var encodedSource = i.replace(/\s+/g, '-').toLowerCase();
+
+                html += "<div class=\"source-item box-item " + sourceItems[i] + "\"> <label>";                
+
+                if(document.cookie.indexOf(encodedSource + "=no") == -1 ){
+                    html += "<input id=\"" + encodedSource + "\" checked type=\"checkbox\"/>";
+                } else {
+                    html += "<input id=\"" + encodedSource + "\" type=\"checkbox\"/>";                    
+                }
+                html += i + "</label></div>";
+            }
+            sources.innerHTML += html;
+
+            var sources = document.getElementById("sources");
+            for (var i in sourceItems){
+                var encodedSource = i.replace(/\s+/g, '-').toLowerCase();
+                var source = document.getElementById(encodedSource);
+                source.addEventListener("change",function(){
+                    var headlines = document.getElementsByClassName(this.id);
+                    console.log(this.id + ": " + this.checked);
+                    for(var i=0;i<headlines.length;i++){
+                        headlines[i].style.display = this.checked ? "" : "none";
+                    }
+
+                    var d = new Date();
+                    d.setTime(d.getTime() + (6*365*24*60*60*1000));
+                    if(this.checked){
+                        document.cookie = this.id + "=yes;expires=0;path=/";                        
+                    } else {
+                        document.cookie = this.id + "=no;expires=" + d.toUTCString() + ";path=/";                        
+                    }
+
+                    resize();
+                });
+            }
+
+
+            resize();
+        }
+    }
+    xhr.open("GET","/news.json",true);
+    console.log("GET /news.json");
+    xhr.send();
+</script>
+
+</body>
+</html>
