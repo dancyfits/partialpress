@@ -1,1 +1,1 @@
-# partialpress
+# Partial Press
